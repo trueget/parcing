@@ -13,16 +13,19 @@ s = BeautifulSoup(r.text, 'lxml')
 for i in range(1,125):                      # проход по страницам сайта
 
     url = f'https://w.mxfilm.es/filmy/komedija/page/{i}/'
-    films = s.findAll('div', class_='th-item')
+    r1 = requests.get(url)
+    s1 = BeautifulSoup(r1.text, 'lxml')
+    films = s1.findAll('div', class_='th-item')
 
     for film in films:                       # проход по всем одинаковым тегам 'div' с класом class_='th-title'
+
         name  = film.find('div', class_='th-title').text            #имя фильма
         year = film.find('div', class_='th-series').text            #год фильма
         rate = film.find('div', class_='th-rate th-rate-kp').text   #рейтинг
         if rate == '':                                              #условие если рейтинга нет
-            rate = 'Нет рейтинга!!'
+            rate = '- -'
 
-        mxfilm.append([name, year, rate])                           #записываем список из имени,года выпуска и рейтинга
+        mxfilm.append([name, year, rate])                   #записываем список из имени,года выпуска и рейтинга
                                                                     #фильма в список mxfilm
 kolonka = ['name', 'year', 'rate']                  #создаем название колонок таблицы
 file = pd.DataFrame(mxfilm, columns=kolonka)        #показываем откуда  загружаем  данные файла
